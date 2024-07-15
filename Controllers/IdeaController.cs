@@ -22,7 +22,7 @@ namespace MyWebApp.Controllers
             _ideaTypeRepository = ideaTypeRepository;
             _httpsContextAccessor = httpsContextAccessor;
         }
-        public async Task<IActionResult> Index(int page = 0, int? ideaTypeId = null)
+        public async Task<IActionResult> Index(int page = 0, int? ideaTypeId = null, string sortBy = "newest")
         {
             IEnumerable<Idea> ideas;
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
@@ -44,8 +44,14 @@ namespace MyWebApp.Controllers
                     ideas = await _ideaRepository.GetAllVisible();
                 }
             }
-            
-
+            if (sortBy == "oldest")
+            {
+                ideas = ideas.OrderBy(i => i.DateCreated);
+            }
+            else 
+            {
+                ideas = ideas.OrderByDescending(i => i.DateCreated);
+            }
             var count = ideas.Count();
 
             var paginatedIdeas = ideas.Skip(page * PageSize).Take(PageSize).ToList();
