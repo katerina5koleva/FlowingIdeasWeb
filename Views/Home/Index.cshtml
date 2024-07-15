@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Flowing Ideas</h1>
+            <p class="lead text-body-secondary">This app is created to help you store and sort your ideas as well as sharing them with other users!</p>
+            <p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-primary my-2" asp-controller="Idea" asp-action="Create">Create Idea</a>
+                }
+                else
+                {
+                    <a class="btn btn-primary my-2" asp-area="Identity" asp-page="/Account/Login">Create Idea</a>
+                }
+                <a class="btn btn-secondary my-2" asp-controller="Idea" asp-action="Index">View Ideas</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+

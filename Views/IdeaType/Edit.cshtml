@@ -1,0 +1,22 @@
+﻿@using MyWebApp.ViewModels
+@model EditIdeaTypeViewModel
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group mb-4">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Enter your idea type title">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-4">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Describe your idea type"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-4">
+        <label asp-for="Color">Color</label>
+        <input asp-for="Color" class="form-control" placeholder="Add your HTML color code for your idea type">
+        <span asp-validation-for="Color" class="text-danger"></span>
+        <small id="emailHelp" class="form-text text-muted">Example: #ffd105, for yellow.</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

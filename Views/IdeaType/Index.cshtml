@@ -1,0 +1,42 @@
+﻿@model IEnumerable<IdeaType>
+
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Idea Types</h1>
+            <p class="lead text-body-secondary">Here you can see all of the idea types that our site currently provides!</p>
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+            {
+                <a type="button" class="btn btn-primary my-3" asp-area="" asp-controller="IdeaType" asp-action="Create">Create Idea Type</a>
+            }
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row">
+        @foreach (var ideaType in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm" style="background-color: @ideaType.Color;">
+                    <div class="card-header">
+                        <h5 class="card-title">@ideaType.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@ideaType.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a asp-controller="IdeaType" asp-action="Detail" asp-route-id="@ideaType.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                                {
+                                    <a asp-controller="IdeaType" asp-action="Edit" asp-route-id="@ideaType.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a asp-controller="IdeaType" asp-action="Delete" asp-route-id="@ideaType.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

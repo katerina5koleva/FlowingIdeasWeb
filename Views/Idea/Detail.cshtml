@@ -1,0 +1,42 @@
+﻿@model Idea
+
+<div class="container-idea">
+    <h1 class="my-4">@Model.Title</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Idea Type:</strong> @Model.Type.Title</li>
+                    </ul>
+                    <div class="description">
+                        <p class="card-text">@Model.Description</p>
+                    </div>
+                    @if (Model.ShowOwner)
+                    {
+                        <p class="card-text"><strong>Email:</strong> @Model.IdenityUser.Email</p>
+                    }
+                    <small class="text-muted">Created on: @Model.DateCreated.ToString("yyyy-MM-dd HH:mm")</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style> 
+    .container-idea {
+    background-color: @Model.Type.Color;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.card-body {
+    max-width: 100%; 
+}
+
+.card-text {
+    white-space: pre-wrap;
+    }
+</style>

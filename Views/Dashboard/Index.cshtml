@@ -1,0 +1,50 @@
+﻿@using MyWebApp.ViewModels
+@model DashboardViewModel
+
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <h1 class="display-4 fw-normal">User Dashboard</h1>
+            <p class="lead text-muted">Welcome to your dashboard! Here you can manage all your ideas.</p>
+            <a type="button" class="btn btn-primary btn-lg" asp-area="" asp-controller="Idea" asp-action="Create">Create Idea</a>
+        </div>
+    </div>
+</section>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <h2 class="display-6 fw-normal mb-4">Your Ideas</h2>
+        <div class="row">
+            @foreach (Idea idea in Model.UserIdeas)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm" style="background-color: @idea.Type.Color;">
+                        <div class="card-header">
+                            <h5 class="card-title">@idea.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@idea.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a type="button" asp-controller="Idea" asp-action="Detail" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                    <a type="button" asp-controller="Idea" asp-action="Edit" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a type="button" asp-controller="Idea" asp-action="Delete" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                </div>
+                                <small class="text-body-secondary">@idea.Type.Title</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+

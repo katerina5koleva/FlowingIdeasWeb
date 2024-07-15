@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Idea>
+
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Published Ideas</h1>
+            <p class="lead text-body-secondary">Here you can see all the ideas posted by other users!</p>
+        </div>
+    </div>
+</section>
+<div>
+    <form asp-controller="Idea" asp-action="Index" method="get">
+        <label for="ideaType">Filter by Idea Type:</label>
+        <select id="ideaType" name="ideaTypeId">
+            <option value="">All</option>
+            @foreach (var ideaType in ViewBag.IdeaTypes)
+            {
+                <option value="@ideaType.Id"
+                        selected="@((ideaType.Id == ViewBag.SelectedIdeaTypeId) ? "selected" : null)">
+                    @ideaType.Title</option>
+            }
+        </select>
+        <button type="submit">Apply Filter</button>
+    </form>
+</div>
+<div class="container">
+    @if (ViewBag.Page > 0)
+    {
+        <a href="@Url.Action("Index", new { page = ViewBag.Page - 1 })"
+           class="btn btn-default">
+            &laquo; Previous Page
+        </a>
+    }
+    @if (ViewBag.Page < ViewBag.MaxPage)
+    {
+        <a href="@Url.Action("Index", new { page = ViewBag.Page + 1 })"
+           class="btn btn-default">
+            Next Page &raquo;
+        </a>
+    }
+    @foreach (var idea in Model)
+    {
+        <div class="row mb-3">
+            <div class="col">
+                <div class="card shadow-sm" style="background-color: @idea.Type.Color;">
+                    <div class="card-header">
+                        <h5 class="card-title">@idea.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" style="white-space: pre-wrap; overflow-wrap: break-word;">@idea.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a asp-controller="Idea" asp-action="Detail" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                @if (User.Identity.IsAuthenticated
+                               && User.FindFirst(System.Security.Claims
+                               .ClaimTypes.NameIdentifier).Value == idea.UserId
+                               || User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                                {
+                                    <a asp-controller="Idea" asp-action="Edit" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a asp-controller="Idea" asp-action="Delete" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                }
+                            </div>
+                            <small class="text-body-secondary">@idea.Type.Title</small>
+                            @if (idea.ShowOwner)
+                            {
+                                <small class="text-body-secondary">@idea.IdenityUser.Email</small>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div> 

@@ -1,0 +1,28 @@
+﻿@model IdeaType;
+
+<h1>Are you sure you want to delete this idea type?</h1>
+<form asp-action="Delete" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="form-group mb-4">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Enter your idea title" readonly>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-4">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Write your idea" readonly></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-4">
+        <label asp-for="Color">Color</label>
+        <input asp-for="Color" class="form-control" placeholder="Enter your idea title" readonly>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <form action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Confirm" class="btn btn-danger float-right mt-3" />
+        </form>
+    </div>
+</form>
