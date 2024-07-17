@@ -7,9 +7,9 @@ namespace MyWebApp.ViewModels
 {
     public class CreateIdeaViewModel
     {
-        public string UserId { get; set; }
-        public string UserEmail { get; set; }
+        [Required]
         public bool IsPublic { get; set; }
+        [Required]
         public bool ShowOwner { get; set; }
         [Required]
         public int SelectedIdeaTypeId { get; set; }

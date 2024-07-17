@@ -17,12 +17,14 @@ namespace MyWebApp.Controllers
         private readonly IHttpContextAccessor _httpsContextAccessor;
         private readonly IIdeaRepository _ideaRepository;
         private readonly IIdeaTypeRepository _ideaTypeRepository;
+
         public IdeaController(IIdeaRepository ideaRepository, IIdeaTypeRepository ideaTypeRepository, IHttpContextAccessor httpsContextAccessor)
         {
             _ideaRepository = ideaRepository;
             _ideaTypeRepository = ideaTypeRepository;
             _httpsContextAccessor = httpsContextAccessor;
         }
+
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 0, int? ideaTypeId = null, string sortBy = "newest")
         {
@@ -50,11 +52,12 @@ namespace MyWebApp.Controllers
             if (sortBy == "oldest")
             {
                 ideas = ideas.OrderBy(i => i.DateCreated);
-            
+            }
             else
             {
                 ideas = ideas.OrderByDescending(i => i.DateCreated);
             }
+
             var count = ideas.Count();
 
             var paginatedIdeas = ideas.Skip(page * PageSize).Take(PageSize).ToList();
@@ -64,18 +67,21 @@ namespace MyWebApp.Controllers
 
             return View(paginatedIdeas);
         }
+
         [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {
             Idea idea = await _ideaRepository.GetByIdAsync(id);
             return View(idea);
         }
+
         public async Task<IActionResult> Create()
         {
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             ViewBag.IdeaTypes = ideaTypes.ToList();
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateIdeaViewModel ideaVM)
@@ -100,6 +106,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> Edit(int id)
         {
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
@@ -123,6 +130,7 @@ namespace MyWebApp.Controllers
             };
             return View(editIdeaVM);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditIdeaViewModel editIdeaVM)
@@ -150,6 +158,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> Delete(int id)
         {
             string userId = _httpsContextAccessor.HttpContext.User.GetUserId();

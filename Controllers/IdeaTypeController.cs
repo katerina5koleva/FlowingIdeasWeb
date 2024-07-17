@@ -11,26 +11,31 @@ namespace MyWebApp.Controllers
     {
         private readonly IHttpContextAccessor _httpsContextAccessor;
         private readonly IIdeaTypeRepository _ideaTypeRepository;
+
         public IdeaTypeController(IIdeaTypeRepository ideaTypeRepository, IHttpContextAccessor httpsContextAccessor)
         {
             _ideaTypeRepository = ideaTypeRepository;
             _httpsContextAccessor = httpsContextAccessor;
         }
+
         public async Task<IActionResult> Index()
         {
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             return View(ideaTypes);
         }
+
         public async Task<IActionResult> Detail(int id)
         {
             IdeaType ideaType = await _ideaTypeRepository.GetByIdAsync(id);
             return View(ideaType);
         }
+
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
         }
+
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,6 +55,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
+
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -67,6 +73,7 @@ namespace MyWebApp.Controllers
             };
             return View(editIdeaTypeVM);
         }
+
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -92,6 +99,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
+
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -102,6 +110,7 @@ namespace MyWebApp.Controllers
             }
             return View(ideaType);
         }
+
         [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteIdeaType(int id)
