@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace MyWebApp.Controllers
 {
+    [Authorize]
     public class IdeaController : Controller
     {
         private readonly IHttpContextAccessor _httpsContextAccessor;
@@ -22,12 +23,14 @@ namespace MyWebApp.Controllers
             _ideaTypeRepository = ideaTypeRepository;
             _httpsContextAccessor = httpsContextAccessor;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 0, int? ideaTypeId = null, string sortBy = "newest")
         {
             IEnumerable<Idea> ideas;
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             ViewBag.IdeaTypes = ideaTypes.ToList();
             ViewBag.SelectedIdeaTypeId = ideaTypeId.HasValue ? ideaTypeId.Value : 0;
+            ViewBag.SortBy = sortBy;
             const int PageSize = 3;
             if (ideaTypeId.HasValue && ideaTypeId.Value != 0)
             {
@@ -47,8 +50,8 @@ namespace MyWebApp.Controllers
             if (sortBy == "oldest")
             {
                 ideas = ideas.OrderBy(i => i.DateCreated);
-            }
-            else 
+            
+            else
             {
                 ideas = ideas.OrderByDescending(i => i.DateCreated);
             }
@@ -61,6 +64,7 @@ namespace MyWebApp.Controllers
 
             return View(paginatedIdeas);
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {
             Idea idea = await _ideaRepository.GetByIdAsync(id);
@@ -70,14 +74,7 @@ namespace MyWebApp.Controllers
         {
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             ViewBag.IdeaTypes = ideaTypes.ToList();
-            var currentUser = _httpsContextAccessor.HttpContext.User.GetUserId();
-            string userEmail = _httpsContextAccessor.HttpContext.User.GetEmail();
-            CreateIdeaViewModel ideaVM = new CreateIdeaViewModel
-            {
-                UserId = currentUser,
-                UserEmail = userEmail
-            };
-            return View(ideaVM);
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -87,10 +84,10 @@ namespace MyWebApp.Controllers
             {
                 return View(ideaVM);
             }
-
+            var currentUser = _httpsContextAccessor.HttpContext.User.GetUserId();
             Idea idea = new Idea
             {
-                UserId = ideaVM.UserId,
+                UserId = currentUser,
                 IsPublic = ideaVM.IsPublic,
                 ShowOwner = ideaVM.ShowOwner,
                 Title = ideaVM.Title,
@@ -107,9 +104,11 @@ namespace MyWebApp.Controllers
         {
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             ViewBag.IdeaTypes = ideaTypes.ToList();
-            Idea idea = await _ideaRepository.GetByIdAsync(id);
+            string userId = _httpsContextAccessor.HttpContext.User.GetUserId();
+            Idea idea = await _ideaRepository.GetByIdUserChangesAsync(id, userId);
             if (idea == null)
             {
+                ViewData["ErrorMessage"] = "A problem occurred while proceeding with your request. Access denied.";
                 return View("Error");
             }
             EditIdeaViewModel editIdeaVM = new EditIdeaViewModel
@@ -133,10 +132,11 @@ namespace MyWebApp.Controllers
                 ModelState.AddModelError("", "Failed to edit idea.");
                 return View(editIdeaVM);
             }
-
-            Idea idea = await _ideaRepository.GetByIdAsync(editIdeaVM.Id);
+            string userId = _httpsContextAccessor.HttpContext.User.GetUserId();
+            Idea idea = await _ideaRepository.GetByIdUserChangesAsync(editIdeaVM.Id, userId);
             if (idea == null)
             {
+                ViewData["ErrorMessage"] = "A problem occurred while proceeding with your request. Access denied.";
                 return View("Error");
             }
             idea.IsPublic = editIdeaVM.IsPublic;
@@ -152,11 +152,13 @@ namespace MyWebApp.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
+            string userId = _httpsContextAccessor.HttpContext.User.GetUserId();
             IEnumerable<IdeaType> ideaTypes = await _ideaTypeRepository.GetAll();
             ViewBag.IdeaTypes = ideaTypes.ToList();
-            Idea idea = await _ideaRepository.GetByIdAsync(id);
+            Idea idea = await _ideaRepository.GetByIdUserChangesAsync(id, userId);
             if (idea == null)
             {
+                ViewData["ErrorMessage"] = "A problem occurred while proceeding with your request. Access denied.";
                 return View("Error");
             }
             return View(idea);
@@ -164,9 +166,11 @@ namespace MyWebApp.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteIdea(int id)
         {
-            Idea idea = await _ideaRepository.GetByIdAsync(id);
+            string userId = _httpsContextAccessor.HttpContext.User.GetUserId();
+            Idea idea = await _ideaRepository.GetByIdUserChangesAsync(id, userId);
             if (idea == null)
             {
+                ViewData["ErrorMessage"] = "A problem occurred while proceeding with your request. Access denied.";
                 return View("Error");
             }
             _ideaRepository.Delete(idea);

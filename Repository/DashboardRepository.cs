@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyWebApp.Data;
 using MyWebApp.Interfaces;
@@ -6,6 +7,7 @@ using MyWebApp.Models;
 
 namespace MyWebApp.Repository
 {
+    [Authorize]
     public class DashboardRepository : IDashboardRepository
     {
         private readonly ApplicationDbContext _context;
