@@ -1,8 +1,6 @@
 ﻿@using MyWebApp.ViewModels;
 @model CreateIdeaViewModel
 <form asp-action="Create" method="post">
-    <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
-    <input type="hidden" id="Email" name="UserEmail" asp-for="UserEmail" />
     @Html.AntiForgeryToken()
         <div class="form-group mb-4">
             <label asp-for="SelectedIdeaTypeId">Idea Type</label>

@@ -6,6 +6,7 @@ namespace MyWebApp.Interfaces
     {
         Task<IEnumerable<Idea>> GetAll();
         Task<Idea> GetByIdAsync (int id);
+        Task<Idea> GetByIdUserChangesAsync(int id, string userId);
         Task<IEnumerable<Idea>> GetByIdeaType(int ideaTypeId);
         Task<IEnumerable<Idea>> GetAllVisible();
         bool Add(Idea idea);

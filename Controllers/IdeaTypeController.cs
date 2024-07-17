@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Interfaces;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
 
 namespace MyWebApp.Controllers
 {
+    [Authorize]
     public class IdeaTypeController : Controller
     {
         private readonly IHttpContextAccessor _httpsContextAccessor;
@@ -24,11 +26,12 @@ namespace MyWebApp.Controllers
             IdeaType ideaType = await _ideaTypeRepository.GetByIdAsync(id);
             return View(ideaType);
         }
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateIdeaTypeViewModel ideaTypeVM)
@@ -47,7 +50,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id)
         {
             IdeaType ideaType = await _ideaTypeRepository.GetByIdAsync(id);
@@ -64,7 +67,7 @@ namespace MyWebApp.Controllers
             };
             return View(editIdeaTypeVM);
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditIdeaTypeViewModel editIdeaTypeVM)
@@ -89,6 +92,7 @@ namespace MyWebApp.Controllers
 
             return RedirectToAction("Index");
         }
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             IdeaType ideaType = await _ideaTypeRepository.GetByIdAsync(id);
@@ -98,6 +102,7 @@ namespace MyWebApp.Controllers
             }
             return View(ideaType);
         }
+        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteIdeaType(int id)
         {

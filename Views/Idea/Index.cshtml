@@ -9,18 +9,33 @@
     </div>
 </section>
 <div>
-    <form asp-controller="Idea" asp-action="Index" method="get">
-        <label for="ideaType">Filter by Idea Type:</label>
-        <select id="ideaType" name="ideaTypeId">
-            <option value="">All</option>
-            @foreach (var ideaType in ViewBag.IdeaTypes)
-            {
-                <option value="@ideaType.Id"
-                        selected="@((ideaType.Id == ViewBag.SelectedIdeaTypeId) ? "selected" : null)">
-                    @ideaType.Title</option>
-            }
-        </select>
-        <button type="submit">Apply Filter</button>
+    <form asp-controller="Idea" asp-action="Index" method="get" class="mb-4">
+        <div class="form-row">
+            <div class="col-12 my-1">
+                <label for="ideaType" class="mr-sm-2">Filter by Idea Type:</label>
+                <select id="ideaType" name="ideaTypeId" class="custom-select custom-select-lg mb-3">
+                    <option value="">All</option>
+                    @foreach (var ideaType in ViewBag.IdeaTypes)
+                    {
+                        <option value="@ideaType.Id"
+                                selected="@((ideaType.Id == ViewBag.SelectedIdeaTypeId) ? "selected" : null)">
+                            @ideaType.Title
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 my-1 d-flex align-items-center">
+                <div>
+                    <label for="sortBy" class="mr-sm-2">Sort By:</label>
+                    <select id="sortBy" name="sortBy" class="custom-select custom-select-lg mb-3">
+                        <option value="newest" selected="@((ViewBag.SortBy == "newest") ? "selected" : null)">Newest First</option>
+                        <option value="oldest" selected="@((ViewBag.SortBy == "oldest") ? "selected" : null)">Oldest First</option>
+                    </select>
+                    <button type="submit">Apply Filter & Sort</button>
+                    <a class="btn btn-success btn-lg" asp-controller="Idea" asp-action="Create" style="margin-left: 30px;">Create Idea</a>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 <div class="container">
@@ -38,37 +53,39 @@
             Next Page &raquo;
         </a>
     }
-    @foreach (var idea in Model)
-    {
-        <div class="row mb-3">
-            <div class="col">
-                <div class="card shadow-sm" style="background-color: @idea.Type.Color;">
-                    <div class="card-header">
-                        <h5 class="card-title">@idea.Title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text" style="white-space: pre-wrap; overflow-wrap: break-word;">@idea.Description</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <a asp-controller="Idea" asp-action="Detail" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                @if (User.Identity.IsAuthenticated
-                               && User.FindFirst(System.Security.Claims
-                               .ClaimTypes.NameIdentifier).Value == idea.UserId
-                               || User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+    <div class="mt-4">
+        @foreach (var idea in Model)
+        {
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="card shadow-sm" style="background-color: @idea.Type.Color;">
+                        <div class="card-header">
+                            <h5 class="card-title">@idea.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" style="white-space: pre-wrap; overflow-wrap: break-word;">@idea.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a asp-controller="Idea" asp-action="Detail" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                    @if (User.Identity.IsAuthenticated
+                                   && User.FindFirst(System.Security.Claims
+                                   .ClaimTypes.NameIdentifier).Value == idea.UserId
+                                   || User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                                    {
+                                        <a asp-controller="Idea" asp-action="Edit" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                        <a asp-controller="Idea" asp-action="Delete" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                    }
+                                </div>
+                                <small class="text-body-secondary">@idea.Type.Title</small>
+                                @if (idea.ShowOwner)
                                 {
-                                    <a asp-controller="Idea" asp-action="Edit" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                    <a asp-controller="Idea" asp-action="Delete" asp-route-id="@idea.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                    <small class="text-body-secondary">@idea.IdenityUser.Email</small>
                                 }
                             </div>
-                            <small class="text-body-secondary">@idea.Type.Title</small>
-                            @if (idea.ShowOwner)
-                            {
-                                <small class="text-body-secondary">@idea.IdenityUser.Email</small>
-                            }
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div> 
+        }
+    </div>
+</div>
