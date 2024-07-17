@@ -38,6 +38,16 @@
         </div>
     </form>
 </div>
+<div>
+    <form asp-controller="Idea" asp-action="Index" method="get">
+        <label for="sortBy">Sort By:</label>
+        <select id="sortBy" name="sortBy">
+            <option value="newest" selected>Newest First</option>
+            <option value="oldest">Oldest First</option>
+        </select>
+        <button type="submit">Apply Sort</button>
+    </form>
+</div>
 <div class="container">
     @if (ViewBag.Page > 0)
     {

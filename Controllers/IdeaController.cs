@@ -50,12 +50,11 @@ namespace MyWebApp.Controllers
             if (sortBy == "oldest")
             {
                 ideas = ideas.OrderBy(i => i.DateCreated);
-            }
+            
             else
             {
                 ideas = ideas.OrderByDescending(i => i.DateCreated);
             }
-
             var count = ideas.Count();
 
             var paginatedIdeas = ideas.Skip(page * PageSize).Take(PageSize).ToList();
